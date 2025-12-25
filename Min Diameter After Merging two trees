@@ -1,0 +1,40 @@
+class Solution {
+public:
+    pair<int,int> f(vector<list<int>> &graph,int src){
+        int level =0,a =src;
+        queue<int> q;
+        q.push(src);
+        unordered_set<int> s;
+        s.insert(src);
+        while(q.size()){
+            int p = q.size();
+            while(p--){
+                int x = q.front();
+                q.pop();
+                a =x;
+                for(auto temp : graph[x]){
+                    if(s.count(temp)) continue;
+                    s.insert(temp);
+                    q.push(temp);
+                }
+            }
+            level++;
+        }
+        return {a,level};
+    }
+    int minimumDiameterAfterMerge(vector<vector<int>>& edges1, vector<vector<int>>& edges2) {
+        int n = edges1.size()+1,m = edges2.size()+1;
+        vector<list<int>> graph1(n),graph2(m);
+        for(auto e : edges1) graph1[e[0]].push_back(e[1]),graph1[e[1]].push_back(e[0]);
+        for(auto e : edges2) graph2[e[0]].push_back(e[1]),graph2[e[1]].push_back(e[0]);
+
+        int a = f(graph1,0).first;
+        int dia1 = f(graph1,a).second-1;
+        a = f(graph2,0).first;
+        int dia2 = f(graph2,a).second-1;
+        int ans = (dia1-(dia1)/2 ) + (dia2-(dia2)/2 )+1;
+        ans = max(ans,dia1);
+        ans = max(ans,dia2);
+        return ans;
+    }
+};
