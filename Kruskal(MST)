@@ -1,0 +1,54 @@
+//https://www.geeksforgeeks.org/problems/minimum-spanning-tree/1
+class Solution
+{public:
+	//Function to find sum of weights of edges of the Minimum Spanning Tree.
+	struct edge{
+	    int s,d,w;
+	    edge(int s,int d,int w){
+	        this->s = s;
+	        this->d = d;
+	        this->w = w;
+	    }
+	};
+	static bool cmp(edge &e1,edge &e2){
+	    return e1.w<=e2.w;
+	}
+	//dsu
+	int find(vector<int> &p,int x){
+	    return p[x] = (p[x] == x ? x : find(p,p[x]));
+	}
+	bool Union(vector<int> &p,vector<int> &r,int a,int b){
+	    a = find(p,a);
+	    b = find(p,b);
+	    if(a == b) return false;
+	    if(r[a]<=r[b]){
+	        p[a]= b;
+	        r[b]++;
+	    }
+        else p[b]= a,r[a]++;
+        return true;
+	}
+    int spanningTree(int n, vector<vector<int>> adj[])
+    {
+     vector<edge> v;
+     for(int i = 0;i<n;i++){
+         for(auto x : adj[i]){
+            if(x[0]>i){
+                edge e(i,x[0],x[1]);
+                 v.push_back(e);
+            }
+         } 
+     }
+     sort(v.begin(),v.end(),cmp);
+     vector<int> p(n),r(n,0);
+     for(int i =0;i<n;i++) p[i] = i;
+     int wt = 0,count =0;
+     for(edge x : v){
+        if(Union(p,r,x.s,x.d)) count++,wt+=x.w;
+        if(count == n-1) break;
+     }
+     
+     return wt;
+      
+    }
+};
