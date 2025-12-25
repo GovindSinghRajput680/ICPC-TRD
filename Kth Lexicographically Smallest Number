@@ -1,0 +1,34 @@
+//Try to feel it like a graph
+//it is the problem of graph
+class Solution {
+public:
+    long long f(long long a,long long b,long long n){
+        //Number of childrens of a 
+        long long ans =0;
+        while(a<=n){
+            ans+=(min(n+1,b)-a);
+            a*=10;
+            b*=10;
+        }
+        return ans;
+    }
+    int findKthNumber(int n, int k) {
+        int curr =1;
+        k--;
+        while(k){
+            long long temp = f(curr,curr+1,n);
+            if(temp<=k){
+                //we have found temp numbers
+                k-=temp;
+                //move to the next root
+                curr++;
+            }
+            else{
+                //means I will get my ans in the same branch of the tree
+                curr*=10;//move downwards
+                k--;
+            }
+        }
+        return curr;
+    }
+};
