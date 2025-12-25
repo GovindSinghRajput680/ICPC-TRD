@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define pi pair<int,int>
+vector<list<pi>> graph;//vertex,weight
+void add_edge(int s,int d,int w){
+    graph[s].push_back({d,w});
+    graph[d].push_back({s,w});
+    
+}
+int prims(int n,int s){
+    //I am designing this algo for 1 base indexing
+    vector<int> w(n+1,INT_MAX);//discovery weight
+    w[s] = 0;
+    w[0] =0;
+    vector<int> p(n+1,-1);// By which node it is discovered
+    
+    priority_queue<pi,vector<pi>,greater<pi>> minpq;//{wt,discovered node}
+    minpq.push({0,s});
+    vector<bool> visited(n+1,false);// did we visit this node ?
+    while(minpq.size()){
+        int x = minpq.top().second;
+        minpq.pop();
+        
+        if(visited[x] == false){
+            for(auto temp : graph[x]){
+                if(w[temp.first]>temp.second && p[x] != temp.first){
+                    minpq.push({temp.second,temp.first});
+                    w[temp.first] = temp.second;
+                    p[temp.first] = x;
+                }
+            }
+            visited[x] =true;
+           
+        } 
+    }
+    //for(int i =1;i<=n;i++) cout<<i<<" "<<p[i]<<" "<<w[i]<<endl;
+    int ans =0;
+    for(auto x : w)  ans+=x;
+    return ans;
+    
+}
+int main(){
+    int n,e;
+    cin>>n>>e;
+    graph.resize(n+1,list<pi> ());
+    while(e--){
+        int s,d,w;
+        cin>>s>>d>>w;
+        add_edge(s,d,w);
+    }
+    int start;
+    cin>>start;
+    cout<<prims(n,start);
+    
+    
+}
