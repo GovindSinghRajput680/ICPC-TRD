@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define pi pair<int,int>
+vector<list<pi>> graph;//node,weight
+void add_edge(int s,int d,int w){
+    graph[s].push_back({d,w});
+    graph[d].push_back({s,w});
+}
+//it is similiar to prims
+//Our goal is to find the shortest path between source and destination by weight
+void dijkstra(int n,int s,int d){//it is based on 0 base indexing
+    vector<int> w(n,INT_MAX),p(n,-1);//min weight need to reach from source,via which node
+    w[s] =0;
+    vector<bool> visited(n,0);// is it visited
+  
+    priority_queue<pi,vector<pi>,greater<pi>> minpq;//wt,node
+    minpq.push({0,s});
+    while(minpq.size()){
+        int x = minpq.top().second;
+        minpq.pop();
+        if(!visited[x]){
+            for(auto temp : graph[x]){
+                if(w[temp.first]>w[x]+temp.second){
+                   w[temp.first]=w[x]+temp.second;
+                   p[temp.first] = x;
+                  minpq.push({w[temp.first], temp.first});
+
+                }
+            }
+        }
+        visited[x] = true;
+    }
+    cout<<w[d]<<endl;
+    vector<int> ans;
+    int t = d;
+    while(t != s) ans.push_back(t), t = p[t];
+    ans.push_back(s);
+    for(int i = ans.size()-1;i>=0;i--) cout<<ans[i]<<" ";
+    
+    
+    
+}
+int main() {
+    int t;
+    cin>>t;
+    while(t--){int n;
+        graph.clear();
+        cin>>n;
+        graph.resize(n,list<pi> ());
+        for(int i =0;i<n;i++){
+             for(int j =0;j<n;j++){
+                 int x;
+                 cin>>x;
+                 if(x) add_edge(i,j,x);
+             }
+        }
+        int s,d;
+        cin>>s>>d;
+        dijkstra(n,s,d);
+        cout<<endl;
+       
+    }
+}
